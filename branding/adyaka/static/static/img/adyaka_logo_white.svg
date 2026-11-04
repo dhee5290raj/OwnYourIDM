@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 52" width="220" height="52" fill="none">
+  <!-- Adyaka geometric "A" mark — white version for dark sidebar -->
+
+  <!-- Pixel cluster at apex (top-left of mark) -->
+  <rect x="8"  y="4"  width="5" height="5" fill="white" opacity="0.55"/>
+  <rect x="14" y="4"  width="5" height="5" fill="white" opacity="0.80"/>
+  <rect x="14" y="10" width="5" height="5" fill="white" opacity="0.55"/>
+
+  <!-- Left leg of A  -->
+  <polygon points="19,15  13,15  2,47  9,47" fill="white"/>
+
+  <!-- Right leg of A -->
+  <polygon points="21,15  27,15  38,47  31,47" fill="white"/>
+
+  <!-- Crossbar -->
+  <rect x="10" y="28" width="20" height="5" fill="white"/>
+
+  <!-- Wordmark -->
+  <text
+    x="50" y="37"
+    font-family="'Source Sans Pro', Helvetica, Arial, sans-serif"
+    font-size="26"
+    font-weight="700"
+    letter-spacing="1.5"
+    fill="white">Adyaka</text>
+</svg>

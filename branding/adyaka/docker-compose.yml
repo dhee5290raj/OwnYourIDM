@@ -1,0 +1,99 @@
+services:
+
+  # ── PostgreSQL ────────────────────────────────────────────────
+  adyaka_data:
+    image: postgres:16-alpine
+    container_name: adyaka-db
+    environment:
+      POSTGRES_PASSWORD: adyaka.db.secret
+      POSTGRES_USER: adyaka
+      POSTGRES_DB: adyaka
+      POSTGRES_INITDB_ARGS: --lc-collate=en_US.utf8 --lc-ctype=en_US.utf8
+    networks:
+      - adyaka-net
+    volumes:
+      - adyaka_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # ── Schema initialisation (runs once, then exits) ─────────────
+  adyaka_init:
+    build:
+      context: ../..           # repo root — COPY branding/adyaka/* works from here
+      dockerfile: branding/adyaka/Dockerfile
+    image: adyaka-iam:latest
+    container_name: adyaka-init
+    command: >
+      bash -c "
+        cd /opt/midpoint ;
+        bin/midpoint.sh init-native ;
+        echo '--- schema check ---' ;
+        bin/ninja.sh -B info >/dev/null 2>/tmp/ninja.log ;
+        grep -q 'ERROR' /tmp/ninja.log && (
+          bin/ninja.sh run-sql --create --mode REPOSITORY ;
+          bin/ninja.sh run-sql --create --mode AUDIT
+        ) || echo 'Schema already initialised – skipping.' ;
+      "
+    depends_on:
+      - adyaka_data
+    environment:
+      MP_SET_midpoint_repository_jdbcUsername: adyaka
+      MP_SET_midpoint_repository_jdbcPassword: adyaka.db.secret
+      MP_SET_midpoint_repository_jdbcUrl: jdbc:postgresql://adyaka_data:5432/adyaka
+      MP_SET_midpoint_repository_database: postgresql
+      MP_SET_midpoint_administrator_initialPassword: "Adyaka@2024!"
+      MP_INIT_CFG: /opt/midpoint/var
+    networks:
+      - adyaka-net
+    volumes:
+      - adyaka_home:/opt/midpoint/var
+
+  # ── Adyaka IAM Server ─────────────────────────────────────────
+  adyaka_server:
+    build:
+      context: ../../
+      dockerfile: branding/adyaka/Dockerfile
+    image: adyaka-iam:latest
+    container_name: adyaka-server
+    depends_on:
+      adyaka_init:
+        condition: service_completed_successfully
+      adyaka_data:
+        condition: service_started
+    command: [ "/opt/midpoint/bin/midpoint.sh", "container" ]
+    ports:
+      - "8082:8080"
+    environment:
+      # ── Branding (also set in Dockerfile, repeated here for clarity) ──
+      SPRING_APPLICATION_NAME: "Adyaka"
+      SERVER_SERVLET_CONTEXT_PATH: "/adyaka"
+      SERVER_SERVLET_APPLICATION_DISPLAY_NAME: "Adyaka IAM Platform"
+      SPRING_WEB_RESOURCES_STATIC_LOCATIONS: "file:/opt/midpoint/adyaka-static/,classpath:/static/"
+      # ── Database ──
+      MP_SET_midpoint_repository_jdbcUsername: adyaka
+      MP_SET_midpoint_repository_jdbcPassword: adyaka.db.secret
+      MP_SET_midpoint_repository_jdbcUrl: jdbc:postgresql://adyaka_data:5432/adyaka
+      MP_SET_midpoint_repository_database: postgresql
+      MP_SET_midpoint_administrator_initialPassword: "Adyaka@2024!"
+      MP_UNSET_midpoint_repository_hibernateHbm2ddl: "1"
+      MP_NO_ENV_COMPAT: "1"
+      # ── JVM memory ──
+      MP_MEM_MAX: 2048m
+      MP_MEM_INIT: 1024m
+    networks:
+      - adyaka-net
+    volumes:
+      - adyaka_home:/opt/midpoint/var
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 1m
+      timeout: 30s
+      start_period: 3m
+
+networks:
+  adyaka-net:
+    driver: bridge
+
+volumes:
+  adyaka_data:
+  adyaka_home:
