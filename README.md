@@ -56,3 +56,31 @@ git@github.com:Evolveum/midpoint.git
 This project is licensed under European Union Public License. The documentation is licensed under
 the terms of Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) license.
 See LICENSE file for details.
+
+## Adyaka Branding Overlay
+
+This fork includes a zero-OOTB-modification branding overlay for **Adyaka Infosec** under `branding/adyaka/`.
+
+### Quick Start (Docker)
+
+```bash
+docker compose -f branding/adyaka/docker-compose.yml up -d --build
+```
+
+Open: http://localhost:8082/adyaka  
+Login: `administrator` / `Adyaka@2024!`
+
+### Quick Start (Local Server)
+
+Prerequisites: Java 17+, PostgreSQL 16
+
+```bash
+# One-time DB setup
+psql postgres -c "CREATE USER adyaka WITH PASSWORD 'adyaka.db.secret';"
+psql postgres -c "CREATE DATABASE adyaka OWNER adyaka;"
+
+# Deploy and start
+./branding/adyaka/deploy.sh start
+```
+
+See [branding/adyaka/BRANDING.md](branding/adyaka/BRANDING.md) for full documentation.

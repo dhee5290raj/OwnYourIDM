@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 48" fill="none">
+  <!-- Adyaka "A" mark — icon-only, white, for collapsed sidebar -->
+
+  <!-- Pixel cluster at apex -->
+  <rect x="6"  y="2"  width="5" height="5" fill="white" opacity="0.55"/>
+  <rect x="12" y="2"  width="5" height="5" fill="white" opacity="0.80"/>
+  <rect x="12" y="8"  width="5" height="5" fill="white" opacity="0.55"/>
+
+  <!-- Left leg -->
+  <polygon points="17,13  11,13  1,44  8,44" fill="white"/>
+
+  <!-- Right leg -->
+  <polygon points="19,13  25,13  35,44  28,44" fill="white"/>
+
+  <!-- Crossbar -->
+  <rect x="8" y="26" width="20" height="5" fill="white"/>
+</svg>

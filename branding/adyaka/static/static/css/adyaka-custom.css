@@ -1,0 +1,200 @@
+/* ================================================================
+   Adyaka Infosec – Custom Brand Overrides
+   ================================================================
+   Loaded via DeploymentInformation.additionalFooter (base64 <link>).
+   Injected AFTER midpoint.css so all rules here take precedence.
+
+   How logo is handled:
+     logo.imageUrl in systemConfiguration.xml causes midPoint to render
+     an <img> tag (customLogo) and hide the OOTB PNG background-image
+     span — so no CSS logo override is needed here.
+
+   How header colour is handled:
+     headerColor="#1B2080" in systemConfiguration.xml sets an inline
+     background-color on the brand-link element.
+
+   What this file handles:
+     • Full sidebar body background (headerColor only covers the header band)
+     • Bootstrap $primary overrides (buttons, focus rings, badges)
+     • Link and text accent colours
+     • Login page card header
+     • Scrollbar tinting
+   ================================================================ */
+
+/* ── Brand palette (runtime-overridable) ─────────────────────── */
+:root {
+  --adyaka-navy:       #1B2080;   /* primary: sidebar, buttons, header  */
+  --adyaka-navy-dark:  #0D1147;   /* sidebar body background            */
+  --adyaka-navy-light: #2A3099;   /* hover / active states              */
+  --adyaka-blue:       #1565C0;   /* accent: links, highlights          */
+  --adyaka-off-white:  #F4F6FB;   /* page/content background            */
+}
+
+/* ── Page background ─────────────────────────────────────────── */
+:root { --app-content-bg: var(--adyaka-off-white); }
+
+/* ── Bootstrap primary token → Adyaka navy ───────────────────── */
+:root {
+  --bs-primary:        var(--adyaka-navy);
+  --bs-primary-rgb:    27, 32, 128;
+  --bs-link-color:     var(--adyaka-blue);
+  --bs-link-hover-color: var(--adyaka-navy);
+  --focus-color:       var(--adyaka-blue);
+}
+
+/* ── Sidebar body (below the header band) ────────────────────── */
+/* midPoint 4.9 uses main-sidebar; newer versions use app-sidebar */
+.app-sidebar,
+.main-sidebar {
+  background-color: var(--adyaka-navy-dark) !important;
+}
+
+/* ── Sidebar nav text, links, active/hover states ────────────── */
+.app-sidebar,
+.app-sidebar .nav-link,
+.app-sidebar .nav-sidebar .nav-link,
+.main-sidebar,
+.main-sidebar .nav-link,
+.main-sidebar .nav-sidebar .nav-link {
+  color: #fff !important;
+}
+
+.app-sidebar .nav-sidebar .nav-link:hover,
+.app-sidebar .nav-sidebar .nav-item.menu-open > .nav-link,
+.main-sidebar .nav-sidebar .nav-link:hover,
+.main-sidebar .nav-sidebar .nav-item.menu-open > .nav-link {
+  background-color: var(--adyaka-navy-light) !important;
+}
+
+.app-sidebar .nav-sidebar .nav-link.active,
+.main-sidebar .nav-sidebar .nav-link.active {
+  background-color: var(--adyaka-navy) !important;
+}
+
+/* ── Nav section headers ─────────────────────────────────────── */
+.app-sidebar .nav-header,
+.main-sidebar .nav-header {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+/* ── Top navbar ──────────────────────────────────────────────── */
+/* midPoint 4.9 uses main-header; newer versions use app-header */
+.app-header,
+.main-header {
+  background-color: var(--adyaka-navy) !important;
+  border-bottom-color: var(--adyaka-navy-dark) !important;
+}
+
+.app-header .nav-link,
+.main-header .nav-link,
+.navbar-title,
+.page-title {
+  color: #fff !important;
+}
+
+/* ── Primary buttons ─────────────────────────────────────────── */
+.btn-primary {
+  background-color: var(--adyaka-navy) !important;
+  border-color:     var(--adyaka-navy-dark) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--adyaka-navy-light) !important;
+  border-color:     var(--adyaka-navy) !important;
+}
+
+/* ── Links ───────────────────────────────────────────────────── */
+a         { color: var(--adyaka-blue); }
+a:hover   { color: var(--adyaka-navy); }
+
+/* ── Badges ──────────────────────────────────────────────────── */
+.badge.bg-primary { background-color: var(--adyaka-navy) !important; }
+
+/* ── Progress bars ───────────────────────────────────────────── */
+.progress-bar { background-color: var(--adyaka-navy) !important; }
+
+/* ── Login page card header ──────────────────────────────────── */
+.login-page .card-header,
+.login-page .login-logo > a {
+  background-color: var(--adyaka-navy) !important;
+  color: #fff !important;
+}
+
+/* ── Breadcrumb links ────────────────────────────────────────── */
+.breadcrumb-item a { color: var(--adyaka-blue) !important; }
+
+/* ── Scrollbar (Webkit) ──────────────────────────────────────── */
+::-webkit-scrollbar-thumb       { background: var(--adyaka-navy-light); }
+::-webkit-scrollbar-thumb:hover { background: var(--adyaka-navy); }
+
+/* ── Authenticated page footer ────────────────────────────────── */
+/* midPoint 4.9 uses main-footer; newer versions use app-footer */
+footer.app-footer,
+footer.main-footer {
+    background-color: #f4f4f4;
+}
+
+/* Hide the OOTB "Powered by Evolveum" content */
+footer.app-footer .d-flex.flex-wrap,
+footer.main-footer .d-flex.flex-wrap,
+footer.main-footer span,
+footer.main-footer > div {
+    display: none !important;
+}
+
+footer.app-footer::before,
+footer.main-footer::before {
+    content: 'Adyaka IAM Platform \00b7 Adyaka Infosec';
+    display: block;
+    color: #aaa;
+    font-size: 12px;
+    text-align: center;
+    padding: 6px 0;
+}
+
+/* ── Sidebar brand / logo area ───────────────────────────────── */
+/* midPoint 4.9: brand-link is direct child of main-sidebar (no .sidebar-brand wrapper) */
+.brand-link.custom-logo,
+.sidebar-brand .brand-link.custom-logo {
+    min-height: 57px;
+    padding: 4px 8px !important;
+}
+
+.brand-link.custom-logo img,
+.sidebar-brand .brand-link.custom-logo img {
+    width: 160px;
+    height: auto;
+    max-height: 50px;
+    display: block;
+    object-fit: contain;
+}
+
+/* ── Login page: replace "midPoint" h1 with Adyaka logo ──────── */
+.login-box .card-header h1 {
+    font-size: 0 !important;          /* hide text */
+    min-height: 60px;
+    background-image: url('/adyaka/static/img/adyaka_logo_white.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto 44px;
+}
+
+/* ── Login page: hide OOTB Evolveum footer, show Adyaka ──────── */
+.login-footer .pull-left,
+.login-footer > div {
+    display: none !important;
+}
+
+.login-footer {
+    text-align: center;
+}
+
+.login-footer::after {
+    content: 'Adyaka IAM Platform \00b7 Adyaka Infosec';
+    display: block;
+    color: #888;
+    font-size: 12px;
+    padding: 2px 0;
+}
